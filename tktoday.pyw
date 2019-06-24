@@ -184,9 +184,26 @@ class test:
             self.open_frames[vak] = tk.Frame(self.framelist[vak])
             self.open_frames[vak].grid(row=2,column=0,sticky='w')
 
+            gemmidelde_periode = ['']*4
+            for i in self.lijst[vak]:
+                print(i)
+                if i['type'] == 'RapportGemiddeldeKolom':
+                    if 'geldendResultaat' in i:
+                        gemmidelde_periode[i['periode']-1] = i[
+                            'geldendResultaat'
+                        ]
+                    elif 'resultaatLabelAfkorting' in i:
+                        gemmidelde_periode[i['periode']-1] = i[
+                            'resultaatLabelAfkorting'
+                        ]
+                    else:
+                        gemmidelde_periode[i['periode']-1] = '-'
             for i in range(4):
+                text = f'Periode {i+1}'.ljust(90) + str(
+                    gemmidelde_periode[i]
+                )
                 periodelijst.append(
-                    tk.LabelFrame(self.open_frames[vak],text = f'Periode {i+1}')
+                    tk.LabelFrame(self.open_frames[vak],text = text)
                     )
                 periodelijst[-1].pack(anchor='w')
             for row, i in enumerate(self.lijst[vak]):
@@ -314,42 +331,45 @@ class test:
             else:
                 color_nieuw = None
 
-            f2 = tk.Frame(self.framelist[i])
-            f2.grid(row=1, column=0, sticky='w')
-            tk.Label(f2, text= 'R4:  ',bg=None).grid(row=1, column=0)
+            f2 = tk.Frame(self.framelist[i], height=30,width=378)
+            f2.grid(row=1, column=0,sticky='w')
+            f2.pack_propagate(0)
+
+            tk.Label(f2, text= 'R4:  ',bg=None,).pack(side='left')
             tk.Label(
                 f2,
                 text=cijfergemmidelde,
                 fg = color,
                 font=('Calibiri', 9, 'bold'),
                 bg=None
-                ).grid(row=1, column=1)
-            tk.Label(f2, text= '  SE: ',bg=None).grid(row=1, column=2)
+                ).pack(side='left')
+            tk.Label(f2, text= '  SE: ',bg=None).pack(side='left')
             tk.Label(
                 f2,
                 text=se_cijfergemmidelde,
                 fg = color_se,
                 font=('Calibiri', 9, 'bold'),
                 bg=None
-                ).grid(row=1, column=3)
+                ).pack(side='left')
             if not nieuwste_cijfer:
-                nieuwste_cijfer = '  -  '
+                nieuwste_cijfer = '  - '
             tk.Label(
                 f2, text= '  Nieuwste cijfer: ',
                 bg=None
-                ).grid(row=1, column=4)
+                ).pack(side='left')
             tk.Label(
                 f2,
                 text=nieuwste_cijfer,
                 fg = color_nieuw,
                 font=('Calibiri', 9, 'bold'),
                 bg=None
-                ).grid(row=1, column=5)
+                ).pack(side='left')
             tk.Button(
                 f2,
                 command = partial(self.onvoldoende, i),
                 text = 'Onvoldoende Hulp'
-                ).grid(row=1, column=6)
+                ).pack(side='right',anchor='e')
+
             del cijfergemmidelde, nieuwste_cijfer, se_cijfergemmidelde
 
 
