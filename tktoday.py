@@ -5,11 +5,48 @@ from functools import partial
 from tkinter import messagebox
 
 'bcc500b0-8f13-458a-857c-c17ee6531c61'
+class login:
+    def __init__(self):
+        self.root = tk.Tk()
+
+        self.schools = somapi.Sapi().get_schools()
+        namen = ['{} - {}'.format(i['naam'], i['plaats']) for i in self.schools]
+        width = (max([len(i) for i in namen]))
+        namen.sort()
+        tk.Label(self.root,text='school: ').grid(row=0,column=0,sticky='nw')
+        tk.Label(self.root,text='gebruikersnaam: ').grid(row=1,column=0,sticky='w')
+        tk.Label(self.root,text='wachtwoord: ').grid(row=2,column=0,sticky='w')
+
+        self.listbox = tk.Listbox(self.root, selectmode=tk.BROWSE,width=width)
+        for i in namen:
+            self.listbox.insert(tk.END, i)
+
+        self.listbox.grid(row=0,column=1)
+        username = tk.Entry(self.root, width=width)
+        username.grid(row=1,column=1)
+        password = tk.Entry(self.root, width=width,show='*')
+        password.grid(row=2,column=1)
+        tk.Button(self.root, text='Done', command = partial(
+            self.login, self.listbox, username, password
+            )).grid(row=3,column=1,sticky='e')
+
+        self.root.mainloop()
+
+    def login(self, school, username, password):
+        username = username.get()
+        password = password.get()
+        school = school.get(school.curselection()[0]).split(' - ')[0]
+        for i in self.schools:
+            if i['naam'] == school:
+                uuid = i['uuid']
+        s = somapi.Sapi()
+        s.get_auth(uuid, username, password)
+        self.root.destroy()
+        return
 
 class cijfers:
     def __init__(self):
         s = somapi.Sapi()
-        s.get_schools()
         s.get_auth()
         id = s.get_id()[0]['id']
         self.grades = s.get_grades(id)
@@ -297,4 +334,6 @@ class test:
 #        print([len(i) for i in lijst.values()])
 #        print(sum([len(i) for i in self.lijst.values()]))
 if __name__ == '__main__':
+    if not os.path.isfile('token.json'):
+        login()
     test()
