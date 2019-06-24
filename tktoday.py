@@ -3,6 +3,8 @@ import json
 import tkinter as tk
 from functools import partial
 from tkinter import messagebox
+import os
+from onvoldoende_hulp import calculateOnvoldoende
 
 'bcc500b0-8f13-458a-857c-c17ee6531c61'
 class login:
@@ -14,35 +16,80 @@ class login:
         width = (max([len(i) for i in namen]))
         namen.sort()
         tk.Label(self.root,text='school: ').grid(row=0,column=0,sticky='nw')
-        tk.Label(self.root,text='gebruikersnaam: ').grid(row=1,column=0,sticky='w')
+        tk.Label(
+            self.root,text='gebruikersnaam: '
+        ).grid(row=1,column=0,sticky='w')
         tk.Label(self.root,text='wachtwoord: ').grid(row=2,column=0,sticky='w')
 
-        self.listbox = tk.Listbox(self.root, selectmode=tk.BROWSE,width=width)
+        self.listbox = tk.Listbox(self.root,
+            selectmode=tk.BROWSE,
+            width=width,
+            font=("Helvetica", 9)
+            ,exportselection=0
+        )
+
         for i in namen:
             self.listbox.insert(tk.END, i)
 
         self.listbox.grid(row=0,column=1)
-        username = tk.Entry(self.root, width=width)
-        username.grid(row=1,column=1)
-        password = tk.Entry(self.root, width=width,show='*')
-        password.grid(row=2,column=1)
-        tk.Button(self.root, text='Done', command = partial(
-            self.login, self.listbox, username, password
-            )).grid(row=3,column=1,sticky='e')
 
+        scrollbar = tk.Scrollbar(self.root, orient="vertical")
+        scrollbar.config(command=self.listbox.yview)
+        scrollbar.grid(row=0,column=2,sticky='ns')
+        self.listbox.config(yscrollcommand=scrollbar.set)
+        username = tk.Entry(self.root, width=width, font=("Helvetica", 9))
+        username.grid(row=1,column=1)
+        password = tk.Entry(self.root, width=width,show='*', font=("Helvetica", 9))
+        password.grid(row=2,column=1)
+        button = tk.Button(self.root, text='Done', command = partial(
+            self.login, self.listbox, username, password
+            ))
+        button.grid(row=3,column=1,sticky='e')
+        self.root.bind_all('<Return>', lambda event: button.invoke())
         self.root.mainloop()
+        return
 
     def login(self, school, username, password):
         username = username.get()
         password = password.get()
+        if not username:
+            tk.messagebox.showerror(
+            'Error',
+            'Geen gebruikersnaam ingevult')
+            return
+        elif not password:
+            tk.messagebox.showerror(
+            'Error',
+            'Geen wachtwoord ingevult')
+            return
+        elif not school.curselection():
+            tk.messagebox.showerror(
+            'Error',
+            'Geen school geselecteerd')
+            return
+
         school = school.get(school.curselection()[0]).split(' - ')[0]
         for i in self.schools:
             if i['naam'] == school:
                 uuid = i['uuid']
         s = somapi.Sapi()
-        s.get_auth(uuid, username, password)
+        try:
+            s.get_auth(uuid, username, password)
+        except somapi.AuthenticateError as e:
+
+            msg = json.loads(e.__str__().replace('\'','\"'))
+            if hasattr(self, 'error'):
+                self.error.destroy()
+            self.error = tk.Label(
+            self.root,
+                text=msg['error_description'],
+            )
+            self.error.grid(row=3,column=1,sticky='w')
+            tk.messagebox.showerror(
+                'Error',
+                'Gebruikersnaam of wachtwoord onjuist')
+            return
         self.root.destroy()
-        return
 
 class cijfers:
     def __init__(self):
@@ -337,3 +384,4 @@ if __name__ == '__main__':
     if not os.path.isfile('token.json'):
         login()
     test()
+#    login()

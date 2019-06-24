@@ -36,11 +36,11 @@ class Sapi:
                     }
                 )
             with open('token.json', 'w+') as file:
-                if not token_response.text:
+                if 'error' in token_response.json():
                     file.close()
                     os.remove('token.json')
-                    raise AuthenticateError('School or code appears to be wrong or not valid')
-                    return
+                    raise AuthenticateError(token_response.json())
+                    return token_response
                 else:
                     data = token_response.json()
                     data.pop("scope")
