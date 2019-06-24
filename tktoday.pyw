@@ -186,7 +186,6 @@ class test:
 
             gemmidelde_periode = ['']*4
             for i in self.lijst[vak]:
-                print(i)
                 if i['type'] == 'RapportGemiddeldeKolom':
                     if 'geldendResultaat' in i:
                         gemmidelde_periode[i['periode']-1] = i[
