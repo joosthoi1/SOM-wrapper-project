@@ -3,6 +3,7 @@ from tkinter import messagebox
 
 class calculateOnvoldoende:
     def __init__(self, root, prefilled=None):
+        self.root = root
         self.topframe = tk.Frame(root)
         self.topframe.pack(side='top', fill="x")
         self.bottomframe = tk.Frame(root)
@@ -75,7 +76,11 @@ class calculateOnvoldoende:
             self.row -= 1
     def math(self):
         if not self.weging.get() or not self.minimaal.get():
-            tk.messagebox.showerror('error', 'please fill in')
+            tk.messagebox.showerror(
+                'error',
+                'please fill in',
+                parent = self.root
+                )
             return
         alist = []
         for c,i in enumerate(self.cijfers):
@@ -86,7 +91,11 @@ class calculateOnvoldoende:
         minimaal = float(self.minimaal.get().replace(',','.'))
         wegingen = [float(i.get().replace(',','.')) for i in self.wegingen if i.get()]
         te_halen = (minimaal*(weging+sum(wegingen))-sum(alist))/weging
-        tk.messagebox.showinfo('cijfer', f'je moet een {round(te_halen, 2)} halen om een {minimaal} te staan')
+        tk.messagebox.showinfo(
+            'cijfer',
+            f'je moet een {round(te_halen, 2)} halen om een {minimaal} te staan',
+            parent = self.root
+            )
 
 
     def onFrameConfigure(self, event):

@@ -206,13 +206,17 @@ class test:
                     )
                 periodelijst[-1].pack(anchor='w')
             for row, i in enumerate(self.lijst[vak]):
-                if i['type'] == 'Toetskolom' and not i['isExamendossierResultaat']:
+                self.root.update()
+                cond = 'geldendResultaat' in i or 'resultaatLabelAfkorting' in i
+                if i['type'] == 'Toetskolom' and not i['isExamendossierResultaat'] and cond:
                     if 'geldendResultaat' in i:
                         cijfer = float(i['geldendResultaat'])
-                    else:
+                    elif 'resultaatLabelAfkorting' in i:
                         cijfer = i['resultaatLabelAfkorting']
 
                     if type(cijfer) == float and cijfer < 6:
+                        color = 'OrangeRed2'
+                    elif cijfer == 'O':
                         color = 'OrangeRed2'
                     else:
                         color = None
@@ -245,6 +249,9 @@ class test:
 
             self.is_open[vak] = True
         else:
+            for i in self.open_frames[vak].winfo_children()[::-1]:
+                i.destroy()
+                self.root.update()
             self.open_frames[vak].destroy()
             self.is_open[vak] = False
 
