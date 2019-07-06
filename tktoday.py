@@ -24,8 +24,8 @@ class login:
         self.listbox = tk.Listbox(self.root,
             selectmode=tk.BROWSE,
             width=width,
-            font=("Helvetica", 9)
-            ,exportselection=0
+            font=("Helvetica", 9),
+            exportselection=0
         )
 
         for i in namen:
@@ -39,7 +39,11 @@ class login:
         self.listbox.config(yscrollcommand=scrollbar.set)
         username = tk.Entry(self.root, width=width, font=("Helvetica", 9))
         username.grid(row=1,column=1)
-        password = tk.Entry(self.root, width=width,show='*', font=("Helvetica", 9))
+        password = tk.Entry(
+            self.root,
+            width=width,
+            show='*',
+            font=("Helvetica", 9))
         password.grid(row=2,column=1)
         button = tk.Button(self.root, text='Done', command = partial(
             self.login, self.listbox, username, password
@@ -103,15 +107,26 @@ class cijfers:
         self.root.mainloop()
 
     def add_scrollbar(self):
-        self.canvas = tk.Canvas(self.root, borderwidth=0, background="#ffffff", height=1000)
+        self.canvas = tk.Canvas(
+            self.root,
+            borderwidth=0,
+            background="#ffffff",
+            height=1000
+        )
         self.frame = tk.Frame(self.canvas, background="#ffffff")
-        self.vsb = tk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
+        self.vsb = tk.Scrollbar(
+            self.root,
+            orient="vertical",
+            command=self.canvas.yview
+        )
         self.canvas.configure(yscrollcommand=self.vsb.set)
 
         self.vsb.pack(side="right", fill="y")
         self.canvas.pack(side="left", fill="both", expand=True)
-        self.canvas.create_window((4,4), window=self.frame, anchor="nw",
-                                  tags="self.frame")
+        self.canvas.create_window(
+            (4,4), window=self.frame, anchor="nw",
+            tags="self.frame"
+        )
 
         self.frame.bind("<Configure>", self.onFrameConfigure)
         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
@@ -136,7 +151,12 @@ class cijfers:
 
                 t = 'Je hebt voor de toets{}een {} gehaalt'.format(for1,for2)
 
-                tk.Label(f, text=t, wraplength=370,justify='left').grid(row=1, column=0, sticky='w')
+                tk.Label(
+                    f,
+                    text=t,
+                    wraplength=370,
+                    justify='left'
+                ).grid(row=1, column=0, sticky='w')
 
     def onFrameConfigure(self, event):
         '''Reset the scroll region to encompass the inner frame'''
@@ -160,15 +180,28 @@ class test:
 
 
     def add_scrollbar(self):
-        self.canvas = tk.Canvas(self.root, borderwidth=0, background="#ffffff", height=500)
+        self.canvas = tk.Canvas(
+            self.root,
+            borderwidth=0,
+            background="#ffffff",
+            height=500
+        )
         self.frame = tk.Frame(self.canvas, background="#ffffff")
-        self.vsb = tk.Scrollbar(self.root, orient="vertical", command=self.canvas.yview)
+        self.vsb = tk.Scrollbar(
+            self.root,
+            orient="vertical",
+            command=self.canvas.yview
+        )
         self.canvas.configure(yscrollcommand=self.vsb.set)
 
         self.vsb.pack(side="right", fill="y")
         self.canvas.pack(side="left", fill="both", expand=True)
-        self.canvas.create_window((4,4), window=self.frame, anchor="nw",
-                                  tags="self.frame")
+        self.canvas.create_window(
+            (4,4),
+            window=self.frame,
+            anchor="nw",
+            tags="self.frame"
+        )
 
         self.frame.bind("<Configure>", self.onFrameConfigure)
         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
@@ -207,8 +240,9 @@ class test:
                 periodelijst[-1].pack(anchor='w')
             for row, i in enumerate(self.lijst[vak]):
                 self.root.update()
+                cond1 = not i['isExamendossierResultaat']
                 cond = 'geldendResultaat' in i or 'resultaatLabelAfkorting' in i
-                if i['type'] == 'Toetskolom' and not i['isExamendossierResultaat'] and cond:
+                if i['type'] == 'Toetskolom' and cond1 and cond:
                     if 'geldendResultaat' in i:
                         cijfer = float(i['geldendResultaat'])
                     elif 'resultaatLabelAfkorting' in i:
@@ -271,7 +305,12 @@ class test:
         self.framelist = {}
         for row, i in enumerate(self.vakkenlijst):
             tk.Frame(self.frame,height=1,bg='#3399ff').pack(fill='x')
-            self.framelist[i] = tk.Frame(self.frame,relief = 'flat',bd=1,bg=None)
+            self.framelist[i] = tk.Frame(
+                self.frame,
+                relief = 'flat',
+                bd=1,
+                bg=None
+            )
             self.framelist[i].pack(anchor='w',fill='x')
             b = tk.Button(
                 self.framelist[i],

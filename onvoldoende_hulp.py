@@ -104,6 +104,5 @@ class calculateOnvoldoende:
 
 if __name__ == "__main__":
     root=tk.Tk()
-    alist1 = [(5,2),(6,1),(7,2),(4.9,1)]
-    calculateOnvoldoende(root, alist1)
+    calculateOnvoldoende(root)
     root.mainloop()

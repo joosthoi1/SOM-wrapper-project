@@ -116,7 +116,6 @@ class Sapi:
             )
         if r.status_code == 401:
             id = self.refresh(self.get_id)
-            print(id)
             return id
 #        print(json.dumps(r.json()['items'], indent=4))
         collections = []
